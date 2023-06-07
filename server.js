@@ -16,17 +16,17 @@ mongoose.connect(process.env.DATABASE_CONNECTION_STRING)
     console.log('Connected Successful')
   
 
-app.get('/test', async (request, response) => {
-  // Attempt to connect to the database
-  await mongoose.connect(process.env.DATABASE_CONNECTION_STRING)
-    .catch((err) => {
-      // Handle connection error
-      console.log(err.message)
-    })
-  // Send a response indicating that the test request was received
-  response.send('test request received')
+// app.get('/test', async (request, response) => {
+//   // Attempt to connect to the database
+//   await mongoose.connect(process.env.DATABASE_CONNECTION_STRING)
+//     .catch((err) => {
+//       // Handle connection error
+//       console.log(err.message)
+//     })
+//   // Send a response indicating that the test request was received
+//   response.send('test request received')
 
-})
+// })
 
 app.get('/books', async (request, response) => {
   try {
@@ -44,7 +44,7 @@ app.post('/books', async (request, response) => {
   // Extract the book cover data from the request body
   let cover = request.body;
   // Insert the book cover into the arrayOfBooks collection
-  arrayOfBooks.insertMany(cover)
+  bookModel.insertMany(cover)
     .then(() => {
       // Log a success message when the book is added
       console.log('New Book Added')
