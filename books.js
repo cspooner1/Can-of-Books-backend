@@ -10,7 +10,7 @@ let bookModel
         bookModel = mongoose.model("Book", bookSchema)
 
 
-        const arrayOfBooks = [
+        let arrayOfBooks = [
             {
                 title: 'Book 1',
                 author: 'Author 1',

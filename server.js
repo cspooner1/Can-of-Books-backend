@@ -10,22 +10,69 @@ const app = express();
 app.use(cors());
 
 const PORT = process.env.PORT || 3001;
+// Connect to the database using the provided connection string
 mongoose.connect(process.env.DATABASE_CONNECTION_STRING)
-    .then(() => { console.log('Connected Successful')})
+    // Log a success message when the connection is established 
+    console.log('Connected Successful')
   
 
-app.get('/books', async (request, response) => {
-  let allBooks =await bookModel.find();
-  response.send(allBooks)
-})
-
 app.get('/test', async (request, response) => {
+  // Attempt to connect to the database
   await mongoose.connect(process.env.DATABASE_CONNECTION_STRING)
     .catch((err) => {
+      // Handle connection error
       console.log(err.message)
     })
+  // Send a response indicating that the test request was received
   response.send('test request received')
 
 })
+
+app.get('/books', async (request, response) => {
+  try {
+    // Fetch all books from the database
+    let allBooks = await bookModel.find({});
+    // Send the retrieved books as the response
+    response.send(allBooks)
+  } catch (error) {
+    // Handle server error
+    response.status(500).json({ error: 'Server Error' });
+  }
+})
+
+app.post('/books', async (request, response) => {
+  // Extract the book cover data from the request body
+  let cover = request.body;
+  // Insert the book cover into the arrayOfBooks collection
+  arrayOfBooks.insertMany(cover)
+    .then(() => {
+      // Log a success message when the book is added
+      console.log('New Book Added')
+    }).catch((error) => {
+      // Handle database error and send an error response
+      response.status(500).json({ error: error.message })
+    })
+  // Send a response indicating that the request was received
+  response.send('Heard')
+})
+
+
+app.delete('/books/:id', async (request, response) => {
+  // Extract the book ID from the request parameters
+  let bookId = request.params.id
+  // Delete the book with the specified ID from the allBooks collection
+  await allBooks.findByIdAndDelete(bookId)
+      // Send a response indicating successful deletion
+      response.send('Error: Books Unavailable')
+    .catch((error) => {
+      // Handle database error and send an error response
+      response.status(500).json({ error: error.message })
+    });
+  // If the control reaches this point, it means the response was sent earlier
+  // In case of an error or invalid ID, the response will be 'Book deleted'
+  // Therefore, the line below might not be necessary or accurate
+  // response.send('Error: Books Unavailable');
+});
+
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
