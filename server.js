@@ -74,5 +74,19 @@ app.delete('/books/:id', async (request, response) => {
   // response.send('Error: Books Unavailable');
 });
 
+app.put('/books/:id', async (request, response) => {
+  // Extract the book ID from the request parameters
+  let coverId = request.params.id;
+  // Extract the updated book cover data from the request body
+  let cover = request.body
+   // Find the book with the specified ID and update it with the new cover data
+  // The { new: true } option ensures that the updated document is returned
+  let newCover = await bookModel.findByIdAndUpdate(coverId, cover, {
+    new: true
+  });
+  // Send the updated book cover as the response
+  response.send(newCover)
+});
+
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
